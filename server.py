@@ -72,8 +72,8 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     load_local_env()
+    host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8080"))
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    print(f"Proof of Growth running at http://127.0.0.1:{port}/")
+    server = ThreadingHTTPServer((host, port), Handler)
+    print(f"Proof of Growth running on {host}:{port}")
     server.serve_forever()
-

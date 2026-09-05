@@ -45,6 +45,30 @@ DIFY_API_KEY=你的Dify Workflow API Key
 
 前端会对成长卡内容做 SHA-256，得到 `bytes32`，再调用 `recordGrowth(bytes32)`。钱包弹窗和交易确认由用户本人审核。
 
+## Render 公网部署（Vercel 短信验证受阻时的备用方案）
+
+本项目的 Python `server.py` 已支持 Render 要求的公网绑定地址。Render 官方支持从 GitHub 部署 Python Web Service，并为服务提供公开的 `onrender.com` 地址。
+
+1. 打开 <https://dashboard.render.com/>，使用 GitHub 登录。
+2. 选择 `New → Web Service`，连接仓库 `Lucy-Li-le/-`。
+3. 选择分支 `main`，运行环境选择 `Python 3`。
+4. 填写：
+
+   ```text
+   Build Command: pip install -r requirements.txt
+   Start Command: python server.py
+   ```
+
+5. 在 `Environment → Environment Variables` 添加：
+
+   ```text
+   DIFY_API_KEY = 真实 Dify API Key
+   ```
+
+6. 选择 Free 计划并创建服务。部署完成后使用 Render 提供的公网 URL 测试页面。
+
+真实 API Key 只存在 Render 环境变量中，不写前端、不写 GitHub、不放浏览器请求体。
+
 ## Vercel 公网部署
 
 1. 登录 Vercel，选择从 GitHub 导入本仓库。
@@ -95,4 +119,3 @@ Dify 调用按实际服务额度产生成本，Vercel 使用平台额度；链�
 4. 点击「连接钱包」，确认 OKX Wallet 为 Monad Testnet。
 5. 点击「上链存证」，审核钱包弹窗后确认交易。
 6. 点击 Monadscan 链接，展示交易结果。
-
