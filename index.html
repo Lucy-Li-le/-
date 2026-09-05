@@ -36,7 +36,7 @@
           </div>
           <div class="composer">
             <label for="userMessage">写下今天的一点进展</label>
-            <textarea id="userMessage" rows="5" placeholder="哪怕只是开始，也值得被看见……"></textarea>
+            <textarea id="userMessage" rows="5" maxlength="2000" placeholder="哪怕只是开始，也值得被看见……"></textarea>
             <div class="composer-footer">
               <span class="hint">AI 会帮你整理成一张成长卡</span>
               <button id="talkBtn" class="primary-button" type="button">和 AI 聊聊</button>
@@ -50,7 +50,7 @@
             <span class="companion-kicker">AI COMPANION</span>
             <span class="soft-label">陪你看见变化</span>
           </div>
-          <div id="aiReply" class="ai-reply">虽然很多东西还不熟悉……</div>
+          <div id="aiReply" class="ai-reply">等待你写下今天的记录。</div>
           <div id="emotionBadge" class="emotion-badge">等待你的记录</div>
         </section>
 
@@ -59,8 +59,8 @@
             <span class="card-label">今日成长</span>
             <span id="growthDate" class="date-label"></span>
           </div>
-          <h2 id="growthTitle">第一次为黑客松做准备</h2>
-          <p id="growthSummary">面对陌生的 Web3 和 Monad，我完成了从钱包、测试网到合约部署的第一次练习。</p>
+          <h2 id="growthTitle">你的成长卡会出现在这里</h2>
+          <p id="growthSummary">写下今天发生的事，再生成属于你的记录。</p>
           <div class="card-divider"></div>
           <div class="card-actions">
             <button id="saveGrowthBtn" class="secondary-button" type="button" disabled>保存成长记录</button>

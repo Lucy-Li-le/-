@@ -11,14 +11,16 @@ let currentMessage = "";
 let currentHash = "";
 let generating = false;
 let walletAddress = "";
+let selectedWallet = null;
+let onchainBusy = false;
 
 function localMock(userMessage) {
   const trimmed = userMessage.trim();
   return {
-    emotion: "认真而勇敢",
-    reply: `你没有等到完全准备好才开始。今天，你已经把“想做”变成了一个具体动作：${trimmed.slice(0, 42)}${trimmed.length > 42 ? "……" : ""}`,
-    growth_title: "我为自己的下一步留下了证据",
-    growth_summary: "面对陌生的 Web3 和 Monad，我完成了新的尝试，也更清楚下一步要往哪里走。",
+    emotion: "演示模式 · 未判断情绪",
+    reply: "【演示模式，非 AI 分析】已收到你的记录。以下仅摘录你提供的内容。",
+    growth_title: "演示记录：今天发生的事",
+    growth_summary: trimmed.slice(0, 160) + (trimmed.length > 160 ? "……" : ""),
   };
 }
 
@@ -37,10 +39,12 @@ async function generateGrowth(userMessage) {
   const message = String(userMessage || "").trim();
   if (!message) throw new Error("请先写下今天发生的内容");
 
+  if (message.length > 2000) throw new Error("请控制在 2000 字以内");
   let response;
   try {
     response = await fetch("/api/growth", {
       method: "POST",
+      signal: AbortSignal.timeout(55000),
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ user_message: message }),
     });
@@ -87,7 +91,9 @@ function setGenerating(value) {
 
 function saveLocalRecord(extra = {}) {
   if (!currentGrowth) return;
+  try {
   const records = JSON.parse(localStorage.getItem("proof-of-growth-records") || "[]");
+  if (!Array.isArray(records)) return false;
   records.unshift({
     ...currentGrowth,
     user_message: currentMessage,
@@ -95,6 +101,8 @@ function saveLocalRecord(extra = {}) {
     ...extra,
   });
   localStorage.setItem("proof-of-growth-records", JSON.stringify(records.slice(0, 100)));
+  return true;
+  } catch { return false; }
 }
 
 async function sha256Hex(value) {
@@ -104,14 +112,18 @@ async function sha256Hex(value) {
 }
 
 async function ensureMonadNetwork() {
-  if (!window.ethereum) throw new Error("未检测到浏览器钱包，请安装并解锁 OKX Wallet");
-  const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-  const chainId = await window.ethereum.request({ method: "eth_chainId" });
-  const numericChainId = Number.parseInt(chainId, 16);
+  selectedWallet = window.okxwallet?.request ? window.okxwallet :
+    window.ethereum?.providers?.find(p => p.isOkxWallet || p.isOKExWallet) ||
+    ((window.ethereum?.isOkxWallet || window.ethereum?.isOKExWallet) ? window.ethereum : null);
+  if (!selectedWallet) throw new Error("未检测到 OKX Wallet，请安装或启用 OKX 浏览器钱包");
+  const accounts = await selectedWallet.request({ method: "eth_requestAccounts" });
+  const chainId = await selectedWallet.request({ method: "eth_chainId" });
+  const numericChainId = Number(chainId);
   if (numericChainId !== 10143) {
     throw new Error(`当前不是 Monad Testnet（检测到 Chain ID ${numericChainId}）`);
   }
   walletAddress = accounts[0] || "";
+  if (!walletAddress) throw new Error("钱包未提供可用账户");
   $("networkStatus").textContent = `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)} · Monad`;
   $("connectWalletBtn").textContent = "钱包已连接";
   return walletAddress;
@@ -140,14 +152,14 @@ async function writeGrowthOnchain() {
     growth_summary: currentGrowth.growth_summary,
   });
   currentHash = await sha256Hex(canonical);
-  const provider = new window.ethers.BrowserProvider(window.ethereum);
+  const provider = new window.ethers.BrowserProvider(selectedWallet);
   const signer = await provider.getSigner();
   const contract = new window.ethers.Contract(config.address, CONTRACT_ABI, signer);
   const transaction = await contract.recordGrowth(currentHash);
   $("localStatus").textContent = "交易已提交，等待 Monad Testnet 确认……";
   await transaction.wait();
-  saveLocalRecord({ growth_hash: currentHash, tx_hash: transaction.hash, contract_address: config.address });
-  $("localStatus").textContent = "已保存本地记录，并完成链上存证。";
+  const saved = saveLocalRecord({ growth_hash: currentHash, tx_hash: transaction.hash, contract_address: config.address });
+  $("localStatus").textContent = saved ? "已保存本地记录，并完成链上存证。" : "链上存证已成功，但本地保存失败，请保留下方交易链接。";
   $("chainResult").hidden = false;
   const txLink = $("txLink");
   txLink.href = `${config.explorerUrl || "https://testnet.monadscan.com"}/tx/${transaction.hash}`;
@@ -155,11 +167,18 @@ async function writeGrowthOnchain() {
 }
 
 $("talkBtn").addEventListener("click", async () => {
-  if (generating) return;
+  if (generating || onchainBusy) return;
   const message = $("userMessage").value.trim();
   showError("");
   if (!message) { showError("请先写下今天发生的内容"); $("userMessage").focus(); return; }
   setGenerating(true);
+  currentGrowth = null;
+  currentHash = "";
+  $("chainResult").hidden = true;
+  $("txLink").removeAttribute("href");
+  $("localStatus").textContent = "";
+  $("saveGrowthBtn").disabled = true;
+  $("onchainBtn").disabled = true;
   try {
     const growth = await generateGrowth(message);
     currentMessage = message;
@@ -174,18 +193,21 @@ $("talkBtn").addEventListener("click", async () => {
 });
 
 $("saveGrowthBtn").addEventListener("click", () => {
-  saveLocalRecord();
-  $("localStatus").textContent = "已保存到当前浏览器的 LocalStorage。";
+  const saved = saveLocalRecord();
+  $("localStatus").textContent = saved ? "已保存到当前浏览器的 LocalStorage。" : "本地保存失败，请检查浏览器存储空间或隐私设置。";
 });
 
 $("connectWalletBtn").addEventListener("click", connectWallet);
 $("onchainBtn").addEventListener("click", async () => {
   const button = $("onchainBtn");
+  if (onchainBusy || generating) return;
+  onchainBusy = true;
   button.disabled = true;
+  $("talkBtn").disabled = true;
   showError("");
   try { await writeGrowthOnchain(); }
   catch (error) { showError(error.message || "上链失败"); }
-  finally { button.disabled = !currentGrowth; }
+  finally { onchainBusy = false; button.disabled = !currentGrowth; $("talkBtn").disabled = false; }
 });
 
 window.addEventListener("load", () => {
