@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Proof of Growth logo">
+  <defs>
+    <linearGradient id="g" x1="10" y1="12" x2="82" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b39cff"/>
+      <stop offset="1" stop-color="#6b5ce7"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="28" fill="#211d38"/>
+  <path d="M48 17c15 0 28 13 28 28S63 73 48 73 20 60 20 45s13-28 28-28Z" fill="none" stroke="url(#g)" stroke-width="9"/>
+  <path d="M35 48.5 44 57l18-20" fill="none" stroke="#b6dfc2" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"/>
+</svg>
+

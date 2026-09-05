@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Proof of Growth：把今天的微小进步，留下可验证的成长印记。" />
+    <title>Proof of Growth · 成长印记</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js" defer></script>
+    <script src="/contract-config.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Proof of Growth 首页">
+          <img src="/assets/logo.svg" alt="" />
+          <span>Proof of Growth</span>
+        </a>
+        <div class="wallet-area">
+          <span id="networkStatus" class="network-status">未连接钱包</span>
+          <button id="connectWalletBtn" class="wallet-button" type="button">连接钱包</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero panel">
+          <div class="hero-copy">
+            <p class="eyebrow">Proof of Growth</p>
+            <h1>今天发生了什么？</h1>
+            <p class="tagline">A quiet place to notice your progress</p>
+          </div>
+          <div class="composer">
+            <label for="userMessage">写下今天的一点进展</label>
+            <textarea id="userMessage" rows="5" placeholder="哪怕只是开始，也值得被看见……"></textarea>
+            <div class="composer-footer">
+              <span class="hint">AI 会帮你整理成一张成长卡</span>
+              <button id="talkBtn" class="primary-button" type="button">和 AI 聊聊</button>
+            </div>
+          </div>
+          <p id="errorMessage" class="error-message" role="alert" hidden></p>
+        </section>
+
+        <section class="conversation panel">
+          <div class="section-heading">
+            <span class="companion-kicker">AI COMPANION</span>
+            <span class="soft-label">陪你看见变化</span>
+          </div>
+          <div id="aiReply" class="ai-reply">虽然很多东西还不熟悉……</div>
+          <div id="emotionBadge" class="emotion-badge">等待你的记录</div>
+        </section>
+
+        <section class="growth-card panel">
+          <div class="card-topline">
+            <span class="card-label">今日成长</span>
+            <span id="growthDate" class="date-label"></span>
+          </div>
+          <h2 id="growthTitle">第一次为黑客松做准备</h2>
+          <p id="growthSummary">面对陌生的 Web3 和 Monad，我完成了从钱包、测试网到合约部署的第一次练习。</p>
+          <div class="card-divider"></div>
+          <div class="card-actions">
+            <button id="saveGrowthBtn" class="secondary-button" type="button" disabled>保存成长记录</button>
+            <button id="onchainBtn" class="outline-button" type="button" disabled>上链存证</button>
+          </div>
+          <p id="localStatus" class="status-text" aria-live="polite"></p>
+        </section>
+
+        <section id="chainResult" class="chain-result panel" hidden>
+          <span class="chain-dot"></span>
+          <div>
+            <strong>成长印记已写入 Monad Testnet</strong>
+            <a id="txLink" href="#" target="_blank" rel="noreferrer">查看交易</a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>微小进步，也值得被记住。</span>
+        <span>Monad Testnet · Chain ID 10143</span>
+      </footer>
+    </div>
+  </body>
+</html>
+

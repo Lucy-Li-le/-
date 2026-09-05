@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#12101e"/>
+      <stop offset="1" stop-color="#262044"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#302952"/>
+      <stop offset="1" stop-color="#1d1a31"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="130" cy="90" r="280" fill="#6653d7" opacity=".16"/>
+  <circle cx="1500" cy="900" r="310" fill="#53a98e" opacity=".12"/>
+  <rect x="180" y="100" width="1240" height="800" rx="38" fill="#1e1c31" stroke="#5b527b" stroke-opacity=".6"/>
+  <text x="250" y="190" fill="#a996ff" font-size="24" font-family="Arial" letter-spacing="6">PROOF OF GROWTH</text>
+  <text x="250" y="285" fill="#f6f5fb" font-size="72" font-family="Arial" font-weight="700">今天发生了什么？</text>
+  <text x="250" y="335" fill="#c3bed6" font-size="25" font-family="Arial">A quiet place to notice your progress</text>
+  <rect x="250" y="390" width="1100" height="145" rx="20" fill="#0d0b17" stroke="#544b73"/>
+  <text x="290" y="450" fill="#918ca9" font-size="23" font-family="Arial">今天我第一次把成长卡写进链上……</text>
+  <rect x="1110" y="570" width="240" height="60" rx="30" fill="#a7d9b7"/>
+  <text x="1170" y="608" fill="#201a31" font-size="22" font-family="Arial" font-weight="700">和 AI 聊聊</text>
+  <rect x="250" y="690" width="1100" height="150" rx="24" fill="url(#card)" stroke="#5b527b"/>
+  <text x="290" y="735" fill="#ad99ff" font-size="22" font-family="cursive">AI COMPANION</text>
+  <text x="290" y="790" fill="#eeeaf7" font-size="27" font-family="Arial">你没有等到完全准备好才开始。</text>
+  <text x="290" y="827" fill="#a7d9b7" font-size="20" font-family="Arial">今日成长 · 我为自己的下一步留下了证据</text>
+</svg>
+
